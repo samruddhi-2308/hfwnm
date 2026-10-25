@@ -15,8 +15,8 @@
 | **Phase 2** | Core Analytics Engine & FastAPI Services | 3.0h | **Done** | 2026-10-25 |
 | **Phase 3** | Frontend Foundation & Trading Theme | 2.0h | **Done** | 2026-10-25 |
 | **Phase 4** | Trading Portal UI & Decision Support Views | 3.0h | **Done** | 2026-10-25 |
-| **Phase 5** | Containerization, Hardening & CI/CD | 1.5h | **Next Up** | - |
-| **Phase 6** | Public Deployment & Verification | 1.0h | Pending | - |
+| **Phase 5** | Containerization, Hardening & CI/CD | 1.5h | **Done** | 2026-10-25 |
+| **Phase 6** | Public Deployment & Verification | 1.0h | **Next Up** | - |
 | **Phase 7** | Documentation, AI Transparency & Polish | 0.75h | Pending | - |
 | **Phase 8** | 10-Minute Presentation Video Recording | 2.0h | Pending | - |
 
@@ -100,3 +100,12 @@
   - LODO cross-validation methodology
   - Full data audit report (1,488 periods, 100% January coverage, 0 missing intervals)
 - [x] Verified build: `pnpm build` completed in 1.34s with zero TypeScript errors or warnings.
+
+### Phase 5 Checklist: Containerization, Hardening & CI/CD (DONE)
+- [x] `backend/Dockerfile`: Production Python 3.11 container with non-root user `appuser`, curl healthcheck, and baked-in Parquet snapshots
+- [x] `frontend/Dockerfile`: Multi-stage build with Nginx Alpine serving static assets with gzip compression
+- [x] `frontend/nginx.conf`: Reverse proxy configuration routing `/api` to backend and handling SPA navigation
+- [x] `docker-compose.yml`: Local unified deployment orchestration uniting backend (8000) and frontend (3000)
+- [x] `.dockerignore` for both frontend and backend preventing unwanted cache/module transfers
+- [x] `.github/workflows/ci.yml`: GitHub Actions automated pipeline testing backend (pytest + 85% coverage threshold) and frontend (`pnpm build`)
+- [x] Verified local build: `docker compose build` built both images cleanly.
