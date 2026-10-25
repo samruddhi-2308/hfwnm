@@ -44,9 +44,11 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 
-# Raw Data & Temporary Storage (Committed snapshots are in data/processed)
+# Raw Data, Cache & Temporary Storage (Committed snapshots are in data/processed)
 data/raw/
 backend/data/raw/
+data/cache/
+backend/data/cache/
 *.tmp
 *.log
 *.sqlite

@@ -10,9 +10,9 @@
 
 | Phase | Description | Est. Time | Status | Completed At |
 | :--- | :--- | :--- | :--- | :--- |
-| **Phase 0** | Setup, Discovery & Repo Initialization | 1.0h | **Completed** | 2026-10-25 |
-| **Phase 1** | Ingestion, Cleaning & Parquet Snapshot Pipeline | 2.5h | **Next Up** | - |
-| **Phase 2** | Core Analytics Engine & FastAPI Services | 3.0h | Pending | - |
+| **Phase 0** | Setup, Discovery & Repo Initialization | 1.0h | **Done** | 2026-10-25 |
+| **Phase 1** | Ingestion, Cleaning & Parquet Snapshot Pipeline | 2.5h | **Done** | 2026-10-25 |
+| **Phase 2** | Core Analytics Engine & FastAPI Services | 3.0h | **Next Up** | - |
 | **Phase 3** | Frontend Foundation & Trading Theme | 2.0h | Pending | - |
 | **Phase 4** | Trading Portal UI & Decision Support Views | 3.0h | Pending | - |
 | **Phase 5** | Containerization, Hardening & CI/CD | 1.5h | Pending | - |
@@ -23,20 +23,30 @@
 ---
 
 ### Phase 0 Checklist: Setup & Discovery (DONE)
-- [x] Configure `.gitignore` (ignoring `prd.md`, `.env`, raw data caches, virtualenvs, build artifacts).
-- [x] Set up `.env.example` with project defaults.
-- [x] Initialize project directory scaffolding (`backend/app/services`, `backend/app/routers`, `backend/pipeline`, `backend/data/raw/samples`, `backend/data/processed`, `backend/tests`, `frontend`, `docs`).
-- [x] Run live connectivity test script against Elexon BMRS API (`FUELHH/stream` and `WINDFOR/stream`). Both returned HTTP 200 OK with live January 2026 data.
-- [x] Saved sample API JSON responses under `backend/data/raw/samples/` (`fuelhh_sample.json`, `windfor_sample.json`).
-- [x] Document verified schemas and architecture principles in `docs/ARCHITECTURE.md`.
-- [x] Git status clean with NO commits or pushes as requested.
+- [x] Configure `.gitignore`
+- [x] Set up `.env.example`
+- [x] Initialize project directory scaffolding
+- [x] Run live connectivity test against Elexon BMRS API (HTTP 200 OK on both endpoints)
+- [x] Save sample API JSON responses under `backend/data/raw/samples/`
+- [x] Document verified schemas in `docs/ARCHITECTURE.md`
 
----
+### Phase 1 Checklist: Data Ingestion & Snapshot Pipeline (DONE)
+- [x] Set up Python environment: uv venv + 50 packages installed (pandas, pyarrow, fastapi, httpx, tenacity, pytest, etc.)
+- [x] Built `pipeline/ingest.py`: chunked fetcher (3-day FUELHH chunks, 12-hour WINDFOR chunks) with httpx retry + local JSON disk cache
+- [x] Built `pipeline/clean.py`: UTC parsing, WIND filter, dedup, horizon calc (0-48h), pairing, error sign convention
+- [x] Built `pipeline/mock_generator.py`: realistic synthetic January 2026 data (diurnal + synoptic patterns)
+- [x] Built `pipeline/build_snapshot.py`: master orchestrator producing Parquet + metadata.json
+- [x] Wrote 20 unit tests in `tests/test_pipeline.py` — all passing
+- [x] **Live Elexon API ingestion completed successfully**:
+  - FUELHH: 41,280 raw → 1,488 WIND actuals (100% January coverage, 0 missing periods)
+  - WINDFOR: 20,440 raw → 11,873 valid forecast vintages (horizon 0-48h, January targets only)
+  - Paired: 11,873 forecast-actual matched records
+  - Parquet snapshots: actuals (26 KB), forecasts (77 KB), paired (276 KB)
+  - All data cached to disk for instant re-runs
 
-### Phase 1 Checklist: Data Ingestion & Snapshot Pipeline (Next)
-- [ ] Set up Python environment dependencies (`httpx`, `pandas`, `pyarrow`, `tenacity`, `fastapi`, `pydantic`).
-- [ ] Build chunked fetcher `pipeline/ingest.py` to pull full January 2026 data with retry and local cache.
-- [ ] Build `pipeline/clean.py` for UTC parsing, deduplication, horizon calculation ($0 \le h \le 48$), and pairing.
-- [ ] Build `pipeline/mock_generator.py` for guaranteed offline development resilience.
-- [ ] Build `pipeline/build_snapshot.py` to output `actuals.parquet`, `forecasts.parquet`, `paired_all.parquet`, and `metadata.json`.
-- [ ] Write unit tests verifying exactly 1,488 actual January settlement periods and zero horizon anomalies.
+### Phase 2 Checklist: Core Analytics Engine & FastAPI (Next)
+- [ ] Implement `app/services/selection.py` (day-ahead cutoff selection algorithm)
+- [ ] Implement `app/services/metrics.py` (MAE, RMSE, Bias, nMAE, MAPE, percentiles)
+- [ ] Implement `app/services/risk.py` (LODO cross-validation risk buffer)
+- [ ] Build FastAPI app with Pydantic v2 schemas, routers, CORS
+- [ ] Unit tests with hand-calculated fixtures (>90% coverage on services)

@@ -1,0 +1,41 @@
+{
+  "build_timestamp_utc": "2026-10-25T08:21:00.538780+00:00",
+  "data_source": "elexon_bmrs_api",
+  "target_month": "2026-01",
+  "cleaning_report": {
+    "actuals": {
+      "raw_total": 41280,
+      "non_wind_dropped": 39216,
+      "duplicates_dropped": 480,
+      "negative_generation_dropped": 0,
+      "null_generation_dropped": 0,
+      "final_count": 1488
+    },
+    "forecasts": {
+      "raw_total": 20440,
+      "duplicates_dropped": 0,
+      "negative_horizon_dropped": 4201,
+      "over_horizon_dropped": 2834,
+      "negative_generation_dropped": 0,
+      "null_generation_dropped": 0,
+      "outside_january_dropped": 1532,
+      "final_count": 11873
+    },
+    "pairing": {
+      "paired_count": 11873,
+      "january_periods_expected": 1488,
+      "january_periods_covered": 1488,
+      "missing_periods": []
+    }
+  },
+  "file_sizes": {
+    "actuals_parquet_bytes": 25898,
+    "forecasts_parquet_bytes": 77078,
+    "paired_parquet_bytes": 275890
+  },
+  "row_counts": {
+    "actuals": 1488,
+    "forecasts": 11873,
+    "paired": 11873
+  }
+}
