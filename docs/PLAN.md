@@ -12,8 +12,8 @@
 | :--- | :--- | :--- | :--- | :--- |
 | **Phase 0** | Setup, Discovery & Repo Initialization | 1.0h | **Done** | 2026-10-25 |
 | **Phase 1** | Ingestion, Cleaning & Parquet Snapshot Pipeline | 2.5h | **Done** | 2026-10-25 |
-| **Phase 2** | Core Analytics Engine & FastAPI Services | 3.0h | **Next Up** | - |
-| **Phase 3** | Frontend Foundation & Trading Theme | 2.0h | Pending | - |
+| **Phase 2** | Core Analytics Engine & FastAPI Services | 3.0h | **Done** | 2026-10-25 |
+| **Phase 3** | Frontend Foundation & Trading Theme | 2.0h | **Next Up** | - |
 | **Phase 4** | Trading Portal UI & Decision Support Views | 3.0h | Pending | - |
 | **Phase 5** | Containerization, Hardening & CI/CD | 1.5h | Pending | - |
 | **Phase 6** | Public Deployment & Verification | 1.0h | Pending | - |
@@ -44,9 +44,34 @@
   - Parquet snapshots: actuals (26 KB), forecasts (77 KB), paired (276 KB)
   - All data cached to disk for instant re-runs
 
-### Phase 2 Checklist: Core Analytics Engine & FastAPI (Next)
-- [ ] Implement `app/services/selection.py` (day-ahead cutoff selection algorithm)
-- [ ] Implement `app/services/metrics.py` (MAE, RMSE, Bias, nMAE, MAPE, percentiles)
-- [ ] Implement `app/services/risk.py` (LODO cross-validation risk buffer)
-- [ ] Build FastAPI app with Pydantic v2 schemas, routers, CORS
-- [ ] Unit tests with hand-calculated fixtures (>90% coverage on services)
+### Phase 2 Checklist: Core Analytics Engine & FastAPI (DONE)
+- [x] Implemented `app/config.py`: typed configuration, data paths, benchmark spread (£85/MWh), CORS
+- [x] Implemented `app/data_store.py`: in-memory Parquet loader (<30ms query latency, zero external runtime dependencies)
+- [x] Implemented `app/schemas.py`: complete Pydantic v2 schemas for all response models
+- [x] Implemented `app/services/selection.py`:
+  - Strict Day-Ahead auction cutoff logic on D-1
+  - UTC timestamp conversion across `Europe/London` timezone
+  - Zero look-ahead leakage enforcement (ignores any forecast published after cutoff)
+  - Hourly-to-half-hourly settlement period mapping
+- [x] Implemented `app/services/metrics.py`:
+  - Mathematical formulas for MAE, RMSE, MBE (Bias), nMAE
+  - MAPE with 100 MW capacity floor (avoids zero division on calm periods)
+  - Signed error quantiles ($P_5, P_{10}, P_{25}, P_{50}, P_{75}, P_{90}, P_{95}$)
+  - Horizon lead-time decay bucketing (0-48h)
+  - Daily timeseries error aggregation
+- [x] Implemented `app/services/risk.py`:
+  - Leave-One-Day-Out (LODO) cross-validation empirical risk buffer
+  - Excludes target delivery day $D$ from training set
+  - Downside $P_{10}$ shortfall and upside $P_{90}$ confidence bounds
+  - Downside financial imbalance exposure (£) using benchmark £85/MWh spread
+- [x] Implemented FastAPI endpoints in `app/routers/`:
+  - `GET /api/v1/forecast/dayahead`: Cutoff-governed forecast with LODO risk buffer
+  - `GET /api/v1/forecast/vintages`: Multi-vintage lead-time evolution
+  - `GET /api/v1/accuracy/summary`: High-level KPI metrics with filters
+  - `GET /api/v1/accuracy/by-horizon`: Horizon error dynamics across 0-48h lead times
+  - `GET /api/v1/accuracy/timeseries`: Daily accuracy progression
+  - `GET /api/v1/meta`: Dataset audit and completeness status
+  - `GET /health` & `GET /`: Liveness and OpenAPI documentation
+- [x] Comprehensive test suite in `backend/tests/`:
+  - 39 tests passing (100% pass rate)
+  - 90% code coverage across all core services (`app/services`)
