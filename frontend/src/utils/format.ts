@@ -3,7 +3,7 @@
  */
 
 export function formatMW(val?: number | null, decimals: number = 0): string {
-  if (val === undefined || val === null || isNaN(val)) return '—';
+  if (val === undefined || val === null || isNaN(val)) return '-';
   return `${val.toLocaleString('en-GB', {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
@@ -11,7 +11,7 @@ export function formatMW(val?: number | null, decimals: number = 0): string {
 }
 
 export function formatMWh(val?: number | null, decimals: number = 0): string {
-  if (val === undefined || val === null || isNaN(val)) return '—';
+  if (val === undefined || val === null || isNaN(val)) return '-';
   return `${val.toLocaleString('en-GB', {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
@@ -19,7 +19,7 @@ export function formatMWh(val?: number | null, decimals: number = 0): string {
 }
 
 export function formatGBP(val?: number | null, decimals: number = 0): string {
-  if (val === undefined || val === null || isNaN(val)) return '—';
+  if (val === undefined || val === null || isNaN(val)) return '-';
   return `£${val.toLocaleString('en-GB', {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
@@ -27,7 +27,7 @@ export function formatGBP(val?: number | null, decimals: number = 0): string {
 }
 
 export function formatPercent(val?: number | null, decimals: number = 1): string {
-  if (val === undefined || val === null || isNaN(val)) return '—';
+  if (val === undefined || val === null || isNaN(val)) return '-';
   return `${val.toFixed(decimals)}%`;
 }
 

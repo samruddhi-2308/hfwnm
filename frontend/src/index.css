@@ -1,68 +1,49 @@
 @import "tailwindcss";
 
+/* Light theme. The slate scale is inverted on purpose: existing "slate-100" = ink, "slate-900" = card surface. */
+@theme {
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque', 'Manrope', sans-serif;
+  --color-slate-50:#0E1B26; --color-slate-100:#14232F; --color-slate-200:#22333F; --color-slate-300:#364955;
+  --color-slate-400:#566A77; --color-slate-500:#7A8B96; --color-slate-600:#A5B2BA; --color-slate-700:#C9D2D8;
+  --color-slate-800:#DDE3E8; --color-slate-900:#FFFFFF; --color-slate-950:#F4F6F8;
+  --color-sky-200:#1B3AA0; --color-sky-300:#1E3FB5; --color-sky-400:#2A55E0; --color-sky-500:#3563F0; --color-sky-600:#2A4FD0;
+  --color-amber-300:#8A5300; --color-amber-400:#B26B00; --color-amber-500:#E39A0B;
+  --color-emerald-300:#0B6B47; --color-emerald-400:#0F8A5C; --color-emerald-500:#12A06C;
+  --color-rose-300:#A8182F; --color-rose-400:#D12E48; --color-rose-500:#E0455D;
+  --color-indigo-400:#5B3FD0; --color-indigo-500:#6D4FE0; --color-indigo-600:#5A3DC8;
+}
+
 @layer base {
-  :root {
-    --bg-base: #07090e;
-    --bg-surface: #0d121d;
-    --bg-card: #111827;
-    --bg-card-hover: #162032;
-    --border-subtle: #1e293b;
-    --border-bright: #334155;
-    
-    --accent-cyan: #06b6d4;
-    --accent-emerald: #10b981;
-    --accent-amber: #f59e0b;
-    --accent-rose: #f43f5e;
-    --accent-indigo: #6366f1;
-
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-  }
-
+  html { color-scheme: light; }
   body {
-    background-color: var(--bg-base);
-    color: var(--text-primary);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
+    margin: 0; min-height: 100vh; overflow-x: hidden;
+    background-color: #F4F6F8; color: var(--color-slate-100);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
   }
-
-  /* Numerical data must use tabular figures for trading display stability */
-  .tabular-nums, .num, code, pre {
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum" 1;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  }
+  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
+  code, pre { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  :focus-visible { outline: 2px solid var(--color-sky-400); outline-offset: 2px; }
 }
 
-/* Custom scrollbars for high-density tables */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #090d16;
-}
-::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #334155;
-}
+/* Unlayered on purpose: overrides Tailwind utilities app-wide */
+.tabular-nums, .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+.uppercase { text-transform: none; }
+.tracking-wider, .tracking-wide { letter-spacing: 0; }
+.backdrop-blur-md, .backdrop-blur-xl { backdrop-filter: none; }
+.animate-ping { animation: none; }
+.rounded-xl { border-radius: 10px; }
+.rounded-xl.border { box-shadow: 0 1px 2px rgba(14,27,38,.05), 0 8px 24px -16px rgba(14,27,38,.12); }
+.shadow-2xl, .shadow-xl { box-shadow: 0 12px 32px -8px rgba(14,27,38,.22); }
 
-/* Glow effects */
-.glow-cyan {
-  box-shadow: 0 0 20px -5px rgba(6, 182, 212, 0.25);
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #F4F6F8; }
+::-webkit-scrollbar-thumb { background: #C9D2D8; border-radius: 9999px; }
+
+input[type="range"] { -webkit-appearance: none; appearance: none; background: #DDE3E8; border-radius: 9999px; outline: none; }
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%;
+  background: #2A55E0; cursor: pointer; border: 3px solid #fff; box-shadow: 0 0 0 1px #2A55E0, 0 1px 3px rgba(14,27,38,.3);
 }
-.glow-amber {
-  box-shadow: 0 0 20px -5px rgba(245, 158, 11, 0.25);
-}
-.glow-emerald {
-  box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.25);
-}
+input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #2A55E0; cursor: pointer; border: 3px solid #fff; }

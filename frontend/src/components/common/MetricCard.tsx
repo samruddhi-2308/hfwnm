@@ -10,48 +10,42 @@ interface MetricCardProps {
   icon?: React.ReactNode;
 }
 
-const variantStyles = {
+const variantConfig = {
   cyan: {
-    border: 'border-cyan-500/20 hover:border-cyan-500/40',
-    glow: 'group-hover:shadow-[0_0_20px_-5px_rgba(6,182,212,0.25)]',
-    badge: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
-    val: 'text-cyan-400',
-    iconBg: 'bg-cyan-500/10 text-cyan-400',
+    accentBar: 'bg-sky-500',
+    badgeClass: 'bg-sky-500/10 text-sky-400 border-sky-500/20',
+    iconClass: 'text-sky-400 bg-sky-500/10',
+    valueClass: 'text-slate-100',
   },
   amber: {
-    border: 'border-amber-500/20 hover:border-amber-500/40',
-    glow: 'group-hover:shadow-[0_0_20px_-5px_rgba(245,158,11,0.25)]',
-    badge: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    val: 'text-amber-400',
-    iconBg: 'bg-amber-500/10 text-amber-400',
+    accentBar: 'bg-amber-500',
+    badgeClass: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    iconClass: 'text-amber-400 bg-amber-500/10',
+    valueClass: 'text-slate-100',
   },
   emerald: {
-    border: 'border-emerald-500/20 hover:border-emerald-500/40',
-    glow: 'group-hover:shadow-[0_0_20px_-5px_rgba(16,185,129,0.25)]',
-    badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    val: 'text-emerald-400',
-    iconBg: 'bg-emerald-500/10 text-emerald-400',
+    accentBar: 'bg-emerald-500',
+    badgeClass: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+    iconClass: 'text-emerald-400 bg-emerald-500/10',
+    valueClass: 'text-slate-100',
   },
   rose: {
-    border: 'border-rose-500/20 hover:border-rose-500/40',
-    glow: 'group-hover:shadow-[0_0_20px_-5px_rgba(244,63,94,0.25)]',
-    badge: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-    val: 'text-rose-400',
-    iconBg: 'bg-rose-500/10 text-rose-400',
+    accentBar: 'bg-rose-500',
+    badgeClass: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+    iconClass: 'text-rose-400 bg-rose-500/10',
+    valueClass: 'text-slate-100',
   },
   indigo: {
-    border: 'border-indigo-500/20 hover:border-indigo-500/40',
-    glow: 'group-hover:shadow-[0_0_20px_-5px_rgba(99,102,241,0.25)]',
-    badge: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
-    val: 'text-indigo-400',
-    iconBg: 'bg-indigo-500/10 text-indigo-400',
+    accentBar: 'bg-indigo-500',
+    badgeClass: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
+    iconClass: 'text-indigo-400 bg-indigo-500/10',
+    valueClass: 'text-slate-100',
   },
   slate: {
-    border: 'border-slate-800 hover:border-slate-700',
-    glow: 'group-hover:shadow-[0_0_20px_-5px_rgba(148,163,184,0.15)]',
-    badge: 'bg-slate-800 text-slate-400 border-slate-700',
-    val: 'text-slate-100',
-    iconBg: 'bg-slate-800 text-slate-400',
+    accentBar: 'bg-slate-600',
+    badgeClass: 'bg-slate-800 text-slate-300 border-slate-700',
+    iconClass: 'text-slate-400 bg-slate-800',
+    valueClass: 'text-slate-100',
   },
 };
 
@@ -64,26 +58,28 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   variant = 'slate',
   icon,
 }) => {
-  const style = variantStyles[variant];
+  const config = variantConfig[variant];
 
   return (
-    <div
-      className={`group relative overflow-hidden rounded-xl border bg-slate-900/70 p-4 backdrop-blur-md transition-all duration-200 ${style.border} ${style.glow}`}
-    >
+    <div className="group relative overflow-hidden rounded-xl border border-slate-800/90 bg-slate-900/60 p-4 backdrop-blur-md transition-all duration-200 hover:border-slate-700 hover:bg-slate-900/80 shadow-sm">
+      {/* Subtle top indicator bar */}
+      <div className={`absolute inset-x-0 top-0 h-[2px] opacity-70 ${config.accentBar}`} />
+
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           {icon && (
-            <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${style.iconBg}`}>
+            <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${config.iconClass}`}>
               {icon}
             </div>
           )}
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
             {title}
           </span>
         </div>
+
         {badge && (
           <span
-            className={`rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${style.badge}`}
+            className={`rounded-md border px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${config.badgeClass}`}
           >
             {badge}
           </span>
@@ -91,14 +87,14 @@ export const MetricCard: React.FC<MetricCardProps> = ({
       </div>
 
       <div className="mt-3 flex items-baseline gap-1.5">
-        <span className={`tabular-nums text-2xl font-bold tracking-tight ${style.val}`}>
+        <span className={`tabular-nums text-2xl font-bold tracking-tight ${config.valueClass}`}>
           {value}
         </span>
-        {unit && <span className="text-xs font-medium text-slate-400">{unit}</span>}
+        {unit && <span className="text-xs font-semibold text-slate-400">{unit}</span>}
       </div>
 
       {subtitle && (
-        <p className="mt-1 text-xs text-slate-400">
+        <p className="mt-1 text-[11px] text-slate-400 font-medium truncate">
           {subtitle}
         </p>
       )}

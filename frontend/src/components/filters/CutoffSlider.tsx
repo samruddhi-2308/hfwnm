@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, ShieldAlert } from 'lucide-react';
+import { Clock, ShieldCheck } from 'lucide-react';
 
 interface CutoffSliderProps {
   cutoffTime: string;
@@ -7,7 +7,6 @@ interface CutoffSliderProps {
   disabled?: boolean;
 }
 
-// Available cutoff intervals between 06:00 and 14:00
 const CUTOFF_OPTIONS = [
   '06:00', '06:30', '07:00', '07:30', '08:00', '08:30',
   '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
@@ -16,10 +15,9 @@ const CUTOFF_OPTIONS = [
 
 const PRESETS = [
   { label: '07:00 Early Desk', value: '07:00' },
-  { label: '09:00 Default', value: '09:00' },
-  { label: '10:30 Nord Pool', value: '10:30' },
-  { label: '11:00 EPEX Spot', value: '11:00' },
-  { label: '12:00 Final Gate', value: '12:00' },
+  { label: '09:00 Operational Default', value: '09:00' },
+  { label: '10:30 Nord Pool Auction', value: '10:30' },
+  { label: '11:00 EPEX Spot Auction', value: '11:00' },
 ];
 
 export const CutoffSlider: React.FC<CutoffSliderProps> = ({
@@ -37,21 +35,21 @@ export const CutoffSlider: React.FC<CutoffSliderProps> = ({
   };
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur-md">
+    <div className="rounded-xl border border-slate-800/90 bg-slate-900/60 p-4 backdrop-blur-md shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Clock className="h-4 w-4 text-amber-400" />
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+          <span className="text-xs font-semibold tracking-wider uppercase text-slate-300">
             D-1 Auction Gate Closure Cutoff
           </span>
-          <span className="rounded bg-amber-500/10 px-2 py-0.5 text-xs font-bold text-amber-400 border border-amber-500/20">
+          <span className="rounded-md bg-amber-500/10 px-2 py-0.5 text-xs font-bold text-amber-400 border border-amber-500/20 tabular-nums">
             {cutoffTime} UK
           </span>
         </div>
 
         <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-          <ShieldAlert className="h-3.5 w-3.5 text-cyan-400" />
-          <span>Strict zero look-ahead bias</span>
+          <ShieldCheck className="h-3.5 w-3.5 text-sky-400" />
+          <span className="font-medium">Strict zero look-ahead bias</span>
         </div>
       </div>
 
@@ -63,17 +61,17 @@ export const CutoffSlider: React.FC<CutoffSliderProps> = ({
           value={currentIndex}
           onChange={handleSliderChange}
           disabled={disabled}
-          className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-800 accent-amber-400 disabled:opacity-50"
+          className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-800 disabled:opacity-50"
         />
-        <div className="mt-1 flex justify-between text-[10px] text-slate-500">
+        <div className="mt-1.5 flex justify-between text-[10px] text-slate-500 font-medium">
           <span>06:00 UK</span>
-          <span>09:00 (Desk Open)</span>
-          <span>11:00 (Auction)</span>
+          <span>09:00 (Desk Kickoff)</span>
+          <span>11:00 (Auction Close)</span>
           <span>14:00 UK</span>
         </div>
       </div>
 
-      {/* Quick Presets */}
+      {/* Preset Buttons */}
       <div className="mt-3 flex flex-wrap gap-1.5">
         {PRESETS.map((p) => {
           const isActive = p.value === cutoffTime;
@@ -83,10 +81,10 @@ export const CutoffSlider: React.FC<CutoffSliderProps> = ({
               type="button"
               onClick={() => onChange(p.value)}
               disabled={disabled}
-              className={`rounded-md border px-2.5 py-1 text-xs font-medium transition-all ${
+              className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-all ${
                 isActive
-                  ? 'border-amber-500 bg-amber-500/20 text-amber-300 shadow-[0_0_12px_-2px_rgba(245,158,11,0.3)]'
-                  : 'border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                  ? 'border-amber-500/40 bg-amber-500/15 text-amber-300 shadow-sm font-semibold'
+                  : 'border-slate-800 bg-slate-950/40 text-slate-400 hover:border-slate-700 hover:text-slate-200'
               }`}
             >
               {p.label}
