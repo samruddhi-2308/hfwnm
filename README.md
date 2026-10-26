@@ -1,6 +1,7 @@
 # UK National Wind Forecast Monitoring & Imbalance Risk Portal
 ### January 2026 Operational Decision Support System for Great Britain Power Desks
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-hfwnm.vercel.app-0070F3.svg?logo=vercel&logoColor=white)](https://hfwnm.vercel.app/)
 [![CI/CD Pipeline](https://github.com/samruddhi-2308/hfwnm/actions/workflows/ci.yml/badge.svg)](https://github.com/samruddhi-2308/hfwnm/actions/workflows/ci.yml)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-19-61DAFB.svg?logo=react&logoColor=black)](https://react.dev)
@@ -8,6 +9,8 @@
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-38B2AC.svg?logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white)](https://www.docker.com)
 [![Dataset Health](https://img.shields.io/badge/January%202026%20Coverage-100%25%20(1%2C488%20SPs)-10B981.svg)](https://data.elexon.co.uk/bmrs/api/v1)
+
+> **Live Production Portal**: [https://hfwnm.vercel.app/](https://hfwnm.vercel.app/)
 
 ---
 
@@ -73,28 +76,27 @@ This portal is a full-stack decision-support system built exclusively on Elexon 
 
 ## 4. System Architecture & Tech Stack
 
-```
-+-----------------------------------------------------------------------+
-|                         Data Pipeline Layer                           |
-|  Elexon BMRS API Ingestion -> Validation & Pairing -> Parquet Storage |
-+-----------------------------------┬-----------------------------------+
-                                    | High-speed load at boot (<30ms)
-+-----------------------------------v-----------------------------------+
-|                     FastAPI Backend (Python 3.11)                     |
-|  - In-Memory DuckDB / Pandas Analytical Store                         |
-|  - Cutoff Engine (/api/v1/forecast/dayahead)                          |
-|  - LODO Risk Service (/api/v1/risk/buffer)                            |
-|  - Accuracy Metrics Service (/api/v1/accuracy/*)                      |
-|  - Robust Schema Validation with Pydantic v2                          |
-+-----------------------------------┬-----------------------------------+
-                                    | REST JSON API (CORS enabled)
-+-----------------------------------v-----------------------------------+
-|                   Frontend (React 19 + TypeScript)                    |
-|  - Institutional Slate Theme with Tabular Numerals                    |
-|  - Recharts Fan Chart with P10-P90 Risk Envelope                      |
-|  - Interactive Cutoff Slider & Settlement Ledger                      |
-|  - Single-click CSV Export for Downstream Trading Models              |
-+-----------------------------------------------------------------------+
+```mermaid
+flowchart TD
+    subgraph DataPipeline ["Data Ingestion & Snapshots Layer"]
+        A[Elexon BMRS API<br/>FUELHH Actuals + WINDFOR Forecasts] --> B[Data Cleaning & Validation<br/>pipeline/clean.py]
+        B --> C[(Compressed Apache Parquet<br/>data/processed/ ~379 KB)]
+    end
+
+    subgraph Backend ["FastAPI Analytical Backend (Python 3.11)"]
+        C -->|Pre-warmed at boot <30ms| D[DuckDB / Pandas Store<br/>app/data_store.py]
+        D --> E[Temporal Cutoff Engine<br/>Zero Lookahead D-1 Filter]
+        D --> F[LODO Risk Engine<br/>P10-P90 Empirical Quantiles]
+        D --> G[Horizon Accuracy Engine<br/>0h to 48h Error Decay]
+        E & F & G --> H[REST Endpoints /api/v1/*<br/>Pydantic v2 Schema Validation]
+    end
+
+    subgraph Frontend ["Trading Portal UI (React 19 + TypeScript)"]
+        H -->|JSON via REST / CORS| I[Vite + React 19 Frontend<br/>hfwnm.vercel.app]
+        I --> J[Decision Desk<br/>Confidence Fan & 48-SP Ledger]
+        I --> K[Accuracy & Horizon<br/>Error Decay Dynamics]
+        I --> L[Methodology & Audit<br/>GB Mechanics & Elexon Health]
+    end
 ```
 
 ### Component Details
